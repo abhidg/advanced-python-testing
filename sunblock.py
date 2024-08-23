@@ -8,11 +8,22 @@ from typing import Any, NamedTuple
 import pandas as pd
 import requests
 
+CLEARISH_SKY_WMO_CODES = [0, 1]
+
 
 class SunblockResult(NamedTuple):
+    num_hours: int
     start: datetime.datetime | None
     mean_temp_celsius: float | None
     message: str
+
+    def pretty_print(self):
+        if self.message:
+            print(self.message)
+        print(
+            f"""Found sun block of {self.num_hours} hours, starting at:
+{self.start}, mean temperature is {self.mean_temp_celsius:.1f}°C"""
+        )
 
 
 class Location(NamedTuple):
@@ -41,6 +52,10 @@ def fetch(loc: Location) -> dict[str, Any] | None:
     return res.json() if res.status_code == 200 else None
 
 
+def fahrenheit_to_celsius(temp: pd.Series | float) -> pd.Series | float:
+    return 5 * (temp - 32) / 9
+
+
 def process(data: dict[str, Any] | None) -> pd.DataFrame | None:
     "Processes OpenMeteo data to a dataframe"
     if data is None:
@@ -55,7 +70,9 @@ def process(data: dict[str, Any] | None) -> pd.DataFrame | None:
             "time": hourly["time"],
             "sunrise": sunrise,
             "sunset": sunset,
-            "temperature_fahrenheit": hourly["temperature_2m"],
+            "temperature_celsius": fahrenheit_to_celsius(
+                pd.Series(hourly["temperature_2m"])
+            ),
             "precipitation_mm": hourly["precipitation"],
             "weather_code": hourly["weather_code"],
         }
@@ -70,15 +87,15 @@ def find_sun(data: pd.DataFrame, num_hours: int) -> SunblockResult:
     sunny = (
         (data.sunrise <= data.time)
         & (data.time <= data.sunset)
-        & (data.weather_code == 0)
+        & (data.weather_code.isin(CLEARISH_SKY_WMO_CODES))
     )
     sunny_coded = sunny.map(lambda x: "S" if x else " ").sum()
     idx = sunny_coded.find("S" * num_hours)
     if idx == -1:
-        return SunblockResult(None, None, "No sunny interval found")
+        return SunblockResult(num_hours, None, None, "No sunny interval found")
     else:
-        mean_temp = data.loc[idx : idx + num_hours].temperature_fahrenheit.mean()
-        return SunblockResult(data.loc[idx].time, mean_temp, "")
+        mean_temp = data.loc[idx : idx + num_hours].temperature_celsius.mean()
+        return SunblockResult(num_hours, data.loc[idx].time, mean_temp, "")
 
 
 def sun_precip_times(data: pd.DataFrame) -> pd.DataFrame:
@@ -87,10 +104,10 @@ def sun_precip_times(data: pd.DataFrame) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    loc = BRIGHTON
+    loc = OXFORD
     data = fetch(loc)
     df = process(data)
     if isinstance(df, pd.DataFrame):
-        print(find_sun(df, 2))
+        find_sun(df, 1).pretty_print()
     else:
         print("Error fetching data for", loc)
