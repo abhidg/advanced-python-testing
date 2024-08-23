@@ -1,0 +1,33 @@
+name: tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+    - '**.py'
+    - '.github/workflows/tests.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+    - '**.py'
+    - '.github/workflows/tests.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: python3 -m pip install -r requirements.txt
+    - name: Test with pytest
+      run: python3 -m pytest -vv
