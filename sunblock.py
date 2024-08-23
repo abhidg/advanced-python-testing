@@ -17,13 +17,11 @@ class SunblockResult(NamedTuple):
     mean_temp_celsius: float | None
     message: str
 
-    def pretty_print(self):
+    def __str__(self):
         if self.message:
-            print(self.message)
-        print(
-            f"""Found sun block of {self.num_hours} hours, starting at:
+            return self.message
+        return f"""Found sun block of {self.num_hours} hours, starting at:
 {self.start}, mean temperature is {self.mean_temp_celsius:.1f}°C"""
-        )
 
 
 class Location(NamedTuple):
@@ -98,16 +96,11 @@ def find_sun(data: pd.DataFrame, num_hours: int) -> SunblockResult:
         return SunblockResult(num_hours, data.loc[idx].time, mean_temp, "")
 
 
-def sun_precip_times(data: pd.DataFrame) -> pd.DataFrame:
-    "Report total sunshine time and total precipitation amount in mm"
-    pass
-
-
 if __name__ == "__main__":
     loc = OXFORD
     data = fetch(loc)
     df = process(data)
     if isinstance(df, pd.DataFrame):
-        find_sun(df, 1).pretty_print()
+        print(find_sun(df, 1))
     else:
         print("Error fetching data for", loc)
