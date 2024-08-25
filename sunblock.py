@@ -2,6 +2,7 @@
 Find the next block of sun shining for N hours at your location
 """
 
+import math
 import datetime
 from typing import Any, NamedTuple
 
@@ -51,6 +52,13 @@ def fetch(loc: Location) -> dict[str, Any] | None:
 
 
 def fahrenheit_to_celsius(temp: pd.Series | float) -> pd.Series | float:
+    if isinstance(temp, float):
+        if math.isnan(temp):
+            raise ValueError("Temperature cannot be nan")
+        if math.isinf(temp):
+            raise ValueError("Temperature cannot be infinity")
+        if temp < -459.67:
+            raise ValueError("Temperature below minimum fahrenheit temperature at absolute zero")
     return 5 * (temp - 32) / 9
 
 
