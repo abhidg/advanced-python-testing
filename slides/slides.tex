@@ -2,24 +2,45 @@
 \usepackage{d1}
 \usepackage{minted}
 \usemintedstyle{borland}
+\setminted{fontsize=\footnotesize}
 \hypersetup{pdftitle={Advanced Python Testing}}
-\setbeamertemplate{footline}[text line]{%
-  \parbox{\linewidth}{\vspace*{-8pt}https://github.com/abhidg/advanced-python-testing\hfill\insertshortauthor\hfill\insertpagenumber}}
+\newcommand{\footer}[1]{\parbox{\linewidth}{\vspace*{-8pt}#1\hfill\insertpagenumber}}
+
+% \setbeamertemplate{footline}[text line]{%
+%   \parbox{\linewidth}{\vspace*{-8pt}https://github.com/abhidg/advanced-python-testing\hfill\insertpagenumber}}
+\setbeamertemplate{footline}[text line]{\footer{https://github.com/abhidg/advanced-python-testing}}
 \begin{document}
 \title{Advanced Python Testing}
-\information{Abhishek Dasgupta}{RSECon24, Newcastle, 3 September 2024}
 
-\frame{\titlepage}
 
-\begin{frame}{Advanced Python Testing}
-\phantomsection\label{advanced-python-testing}
-Tired of waiting for network requests, writing millions of edge cases
+\begin{frame}
+
+  \begin{columns}
+  \begin{column}{0.4\textwidth}
+    {\LARGE Advanced Python Testing}
+    \vskip 0.5cm
+    Abhishek Dasgupta
+    \vskip 2.5cm
+    RSECon24, Newcastle
+
+    2024-09-03
+  \end{column}
+  \begin{column}{0.4\textwidth}  %%<--- here
+    Tired of waiting for network requests, writing millions of edge cases
 and copy pasting outputs for testing? This walkthrough is for you.
+\vskip 0.5cm
+Topics: mocking, property based testing, snapshot testing
+  \end{column}
+  \end{columns}
+  \end{frame}
 
-Examples are in Python, but there are similar libraries available in
-other languages.
+% \begin{frame}{Advanced Python Testing}
+% \phantomsection\label{advanced-python-testing}
 
-\end{frame}
+% Examples are in Python, but there are similar libraries available in
+% other languages.
+
+% \end{frame}
 
 \begin{frame}{Mocking}
 \phantomsection\label{mocking}
@@ -43,6 +64,10 @@ other languages.
 \end{frame}
 
 
+{
+\setbeamertemplate{footline}[text line]{%
+\parbox{\linewidth}{\vspace*{-8pt}Example from https://docs.python.org/3/library/unittest.mock.html\hfill\insertpagenumber}}
+
 \begin{frame}[fragile]{Mocking using \texttt{unittest.mock}}
 \begin{itemize}
   \item In-built support for mocking in standard library
@@ -50,6 +75,7 @@ other languages.
   \item Assert function called with certain values
   \item Raise exceptions through side effects
 \end{itemize}
+\vskip 0.5cm
 \begin{minted}{python}
     from unittest.mock import MagicMock
     thing = ProductionClass()
@@ -58,18 +84,30 @@ other languages.
     thing.method.assert_called_with(3, 4, 5, key='value')
 \end{minted}
 \end{frame}
-
+}
+{
+\setbeamertemplate{footline}[text line]{\footer{https://xkcd.com/327}}
+\begin{frame}{Property based testing}
+  \begin{itemize}
+    \item
+  Checks that a particular property is satisfied by the code
+  \item
+  Similar to fuzzing, which tests a system with random inputs
+  \end{itemize}
+  \vskip 0.7cm
+  \includegraphics[width=\textwidth]{xkcd-327.png}
+\end{frame}
+}
 \begin{frame}[fragile]{Property based testing}
 \phantomsection\label{property-based-testing}
 \begin{itemize}
-\item
-  Checks that a particular property is satisfied by the code
 \item
   Normally one writes example based tests
 \end{itemize}
 
 \begin{minted}{python}
-    def fahrenheit_to_celsius(temp): return 5 * (temp - 32) / 9
+    def fahrenheit_to_celsius(temp):
+      return 5 * (temp - 32) / 9
     @pytest.mark.parametrize("f,c", [(212, 100), (32, 0)])
     def test_fahrenheit_to_celsius(temp):
       assert fahrenheit_to_celsius(f) == c
@@ -79,6 +117,10 @@ other languages.
 \item
   Cons of example based testing is not being exhaustive enough
 \item
+  Often we can miss edge cases
+\item
+  Applications: test input sanitisation, encode/decode round trips
+\item
   What is \texttt{fahrenheit\_to\_celsius(NaN)}?
 \end{itemize}
 \end{frame}
@@ -87,14 +129,15 @@ other languages.
 \phantomsection\label{property-based-testing-using-hypothesis}
 \begin{itemize}
 \item
-  Allows one to express properties without providing examples
+  Test properties without providing examples
 \item
-  Generates random examples and edge cases to test your code
+  Generate random examples and edge cases to test your code
 \item
   Number of examples and search strategies can be customised
 \item
   Find counterexamples
 \end{itemize}
+\vskip 0.5cm
 \begin{minted}{python}
     from hypothesis import given
     from hypothesis.strategies import floats, integers
@@ -110,15 +153,15 @@ other languages.
 \phantomsection\label{snapshot-based-testing}
 \begin{itemize}
 \item
-  Captures a \emph{snapshot} of a function or command and tests that it
-  does not change
+  Snapshots output of a function or process
 \item
-  Useful for testing outputs, data transformations
+  Useful for regression testing, data transformations
 \item
   Can be emulated manually (save output to disk, read and test that it
   is the same), but snapshot testing libraries make this easier
 \item We will use the \texttt{syrupy} library for this
 \end{itemize}
+\vskip 0.3cm
 \begin{minted}{python}
     def test_something(snapshot):
       data = load_data(something)
@@ -143,7 +186,13 @@ other languages.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Advanced Python Testing - Links}
-Insert links here ...
+\begin{frame}{Further reading}
+\begin{itemize}
+  \item Mocking: \url{https://docs.python.org/3/library/unittest.mock-examples.html}
+  \item Mocking: specialised libraries \texttt{moto} (AWS), \texttt{requests-mock}
+  \item Mocks can automatically match specs (\texttt{autospec})
+  \item Property based testing \url{https://hypothesis.works/articles/getting-started-with-hypothesis/}
+  \item Property based testing \texttt{schemathesis} (API testing), \texttt{hypothesis-jsonschema}
+\end{itemize}
 \end{frame}
 \end{document}
