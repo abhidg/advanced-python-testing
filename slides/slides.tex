@@ -1,0 +1,153 @@
+\documentclass[11pt,xcolor={dvipsnames},hyperref={pdftex,pdfpagemode=UseNone,hidelinks,pdfdisplaydoctitle=true},usepdftitle=false]{beamer}
+\usepackage{d1}
+\usepackage{minted}
+\usemintedstyle{borland}
+\hypersetup{pdftitle={Advanced Python Testing}}
+\setbeamertemplate{footline}[text line]{%
+  \parbox{\linewidth}{\vspace*{-8pt}https://github.com/abhidg/advanced-python-testing\hfill\insertshortauthor\hfill\insertpagenumber}}
+\begin{document}
+\title{Advanced Python Testing}
+\information{Abhishek Dasgupta}{RSECon24, Newcastle, 3 September 2024}
+
+\frame{\titlepage}
+
+\begin{frame}{Advanced Python Testing}
+\phantomsection\label{advanced-python-testing}
+Tired of waiting for network requests, writing millions of edge cases
+and copy pasting outputs for testing? This walkthrough is for you.
+
+Examples are in Python, but there are similar libraries available in
+other languages.
+
+\end{frame}
+
+\begin{frame}{Mocking}
+\phantomsection\label{mocking}
+\begin{itemize}
+\item
+  Test a code interface without requiring the underlying code to be run
+\item
+  Useful when testing the actual interface is
+
+  \begin{itemize}
+  \item
+    time-consuming
+  \item
+    requires network access
+  \item
+    not possible in an automated way
+  \end{itemize}
+\item Pros: reproducibility, easier setup. Cons: hidden behaviour not exposed
+\item Alternatives: use docker to setup infrastructure
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Mocking using \texttt{unittest.mock}}
+\begin{itemize}
+  \item In-built support for mocking in standard library
+  \item Mock return values
+  \item Assert function called with certain values
+  \item Raise exceptions through side effects
+\end{itemize}
+\begin{minted}{python}
+    from unittest.mock import MagicMock
+    thing = ProductionClass()
+    thing.method = MagicMock(return_value=3)
+    thing.method(3, 4, 5, key='value')
+    thing.method.assert_called_with(3, 4, 5, key='value')
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Property based testing}
+\phantomsection\label{property-based-testing}
+\begin{itemize}
+\item
+  Checks that a particular property is satisfied by the code
+\item
+  Normally one writes example based tests
+\end{itemize}
+
+\begin{minted}{python}
+    def fahrenheit_to_celsius(temp): return 5 * (temp - 32) / 9
+    @pytest.mark.parametrize("f,c", [(212, 100), (32, 0)])
+    def test_fahrenheit_to_celsius(temp):
+      assert fahrenheit_to_celsius(f) == c
+\end{minted}
+
+\begin{itemize}
+\item
+  Cons of example based testing is not being exhaustive enough
+\item
+  What is \texttt{fahrenheit\_to\_celsius(NaN)}?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Property based testing using \texttt{hypothesis}}
+\phantomsection\label{property-based-testing-using-hypothesis}
+\begin{itemize}
+\item
+  Allows one to express properties without providing examples
+\item
+  Generates random examples and edge cases to test your code
+\item
+  Number of examples, and search strategies can be customised
+\item
+  Find counterexamples
+\end{itemize}
+\begin{minted}{python}
+    from hypothesis import given
+    from hypothesis.strategies import floats, integers
+    def divide(x, y): return x / y
+    @given(integers(), integers())
+    def test_divide(x, y): assert divide(x, y) < x
+\end{minted}
+
+\end{frame}
+
+
+\begin{frame}{Snapshot based testing}
+\phantomsection\label{snapshot-based-testing}
+\begin{itemize}
+\item
+  Captures a \emph{snapshot} of a function or command and tests that it
+  does not change
+\item
+  Useful for testing outputs, data transformations
+\item
+  Can be emulated manually (save output to disk, read and test that it
+  is the same), but snapshot testing libraries make this easier
+\item We will use the \texttt{syrupy} library for this
+\end{itemize}
+\end{frame}
+
+% \begin{frame}[fragile]{Snapshot based testing using \texttt{syrupy}}
+% \phantomsection\label{snapshot-based-testing-using-syrupy}
+% \begin{itemize}
+% \item
+%   \texttt{syrupy} takes snapshots
+% \item
+%   easy to use
+% \end{itemize}
+% \end{frame}
+
+\begin{frame}{Walkthrough: finding the sun!}
+\phantomsection\label{walkthrough-finding-the-sun}
+\begin{itemize}
+\item
+  \textbf{Problem}: Find a block of $N$ hours when it will be sunny and
+  clear, given a location.
+\item
+  We will try to find a block of sun of two hours in Newcastle over the
+  next week
+\item
+  OpenMeteo has a nice free API
+\item
+  Steps: fetch data, process and find the sun block
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Advanced Python Testing - Links}
+Insert links here ...
+\end{frame}
+\end{document}
