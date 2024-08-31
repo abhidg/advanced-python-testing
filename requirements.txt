@@ -2,3 +2,4 @@ pandas==2.*
 requests==2.*
 pytest
 hypothesis==6.*
+syrupy
