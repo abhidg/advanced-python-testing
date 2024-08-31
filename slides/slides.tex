@@ -91,7 +91,7 @@ other languages.
 \item
   Generates random examples and edge cases to test your code
 \item
-  Number of examples, and search strategies can be customised
+  Number of examples and search strategies can be customised
 \item
   Find counterexamples
 \end{itemize}
@@ -106,7 +106,7 @@ other languages.
 \end{frame}
 
 
-\begin{frame}{Snapshot based testing}
+\begin{frame}[fragile]{Snapshot based testing}
 \phantomsection\label{snapshot-based-testing}
 \begin{itemize}
 \item
@@ -119,23 +119,19 @@ other languages.
   is the same), but snapshot testing libraries make this easier
 \item We will use the \texttt{syrupy} library for this
 \end{itemize}
+\begin{minted}{python}
+    def test_something(snapshot):
+      data = load_data(something)
+      assert function(data) == snapshot
+\end{minted}
 \end{frame}
 
-% \begin{frame}[fragile]{Snapshot based testing using \texttt{syrupy}}
-% \phantomsection\label{snapshot-based-testing-using-syrupy}
-% \begin{itemize}
-% \item
-%   \texttt{syrupy} takes snapshots
-% \item
-%   easy to use
-% \end{itemize}
-% \end{frame}
 
 \begin{frame}{Walkthrough: finding the sun!}
 \phantomsection\label{walkthrough-finding-the-sun}
 \begin{itemize}
 \item
-  \textbf{Problem}: Find a block of $N$ hours when it will be sunny and
+  \alert{Problem}: Find a block of $N$ hours when it will be sunny and
   clear, given a location.
 \item
   We will try to find a block of sun of two hours in Newcastle over the
