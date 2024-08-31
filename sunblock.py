@@ -32,7 +32,7 @@ class Location(NamedTuple):
 
 # example locations
 OXFORD = Location(51.75, -1.25)
-NEWCASTLE = Location(54.98, -1.61)
+NEWCASTLE = Location(54.98, -1.6)
 BRIGHTON = Location(50.75, 0)
 
 
