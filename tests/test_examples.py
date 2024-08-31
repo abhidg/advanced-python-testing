@@ -6,12 +6,14 @@ from pathlib import Path
 from numpy.testing import assert_approx_equal
 
 from sunblock import (
+    fetch,
     Location,
     openmeteo_api_url,
     fahrenheit_to_celsius,
     process,
     find_sun,
     SunblockResult,
+    NEWCASTLE
 )
 
 
@@ -29,6 +31,14 @@ def test_openmeteo_url():
         "&temperature_unit=fahrenheit"
     )
 
+
+# This will fail if there is no network connection or if OpenMeteo is down
+def test_get_openmeteo():
+    data = fetch(NEWCASTLE)
+    print(data)
+    assert_approx_equal(data["latitude"], NEWCASTLE[0])
+    assert_approx_equal(data["longitude"], NEWCASTLE[1])
+    assert len(data["hourly"]["time"]) == 24 * 7
 
 @pytest.mark.parametrize(
     "fahrenheit,expected_celsius",
