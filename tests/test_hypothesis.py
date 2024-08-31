@@ -17,12 +17,14 @@ from sunblock import fahrenheit_to_celsius
 # are given, we never return a value less than absolute zero (0 K) which
 # is equivalent to -273.15 degrees celsius.
 
+
 @given(floats())
 def test_fahrenheit_to_celsius(temp):
     try:
         assert fahrenheit_to_celsius(temp) > -273.15  # absolute zero
     except ValueError:
         reject()
+
 
 # hypothesis can also be used to intentionally find counter-examples
 # here we are trying to find an example where the numerical values of a

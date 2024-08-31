@@ -58,7 +58,9 @@ def fahrenheit_to_celsius(temp: pd.Series | float) -> pd.Series | float:
         if math.isinf(temp):
             raise ValueError("Temperature cannot be infinity")
         if temp < -459.67:
-            raise ValueError("Temperature below minimum fahrenheit temperature at absolute zero")
+            raise ValueError(
+                "Temperature below minimum fahrenheit temperature at absolute zero"
+            )
     return 5 * (temp - 32) / 9
 
 
