@@ -89,9 +89,11 @@ def process(data: dict[str, Any] | None) -> pd.DataFrame | None:
 
 def find_sun(data: pd.DataFrame, num_hours: int) -> SunblockResult:
     "Finds sun for `num_hours` in the data, after `day_start`"
-    assert (
-        isinstance(num_hours, int) and 0 < num_hours < 23
-    ), "Number of hours must be between 0 and 23"
+    assert isinstance(num_hours, int), "num_hours should be an integer"
+    if num_hours < 1:
+        raise ValueError("Minimum num_hours is 1")
+    if num_hours > 23:
+        raise ValueError("Maximum sun block allowed is 23 hours")
     sunny = (
         (data.sunrise <= data.time)
         & (data.time <= data.sunset)
@@ -103,7 +105,12 @@ def find_sun(data: pd.DataFrame, num_hours: int) -> SunblockResult:
         return SunblockResult(num_hours, None, None, "No sunny interval found")
     else:
         mean_temp = data.loc[idx : idx + num_hours].temperature_celsius.mean()
-        return SunblockResult(num_hours, data.loc[idx].time, mean_temp, "")
+        return SunblockResult(
+            num_hours,
+            datetime.datetime.fromisoformat(data.loc[idx].time),
+            mean_temp,
+            "",
+        )
 
 
 if __name__ == "__main__":

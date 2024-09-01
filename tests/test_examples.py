@@ -13,14 +13,8 @@ from sunblock import (
     process,
     find_sun,
     SunblockResult,
-    NEWCASTLE
+    NEWCASTLE,
 )
-
-
-@pytest.fixture(scope="session")
-def openmeteo_data():
-    data = json.loads(Path(__file__).with_name("openmeteo.json").read_text())
-    return process(data)
 
 
 def test_openmeteo_url():
@@ -39,6 +33,7 @@ def test_fetch_network():
     assert_approx_equal(data["latitude"], NEWCASTLE[0])
     assert_approx_equal(data["longitude"], NEWCASTLE[1])
     assert len(data["hourly"]["time"]) == 24 * 7
+
 
 @pytest.mark.parametrize(
     "fahrenheit,expected_celsius",
@@ -67,7 +62,11 @@ def test_process(openmeteo_data):
 def test_find_sun(openmeteo_data):
     block = find_sun(openmeteo_data, num_hours=3)
     assert_approx_equal(block.mean_temp_celsius, 19.916666666666668)
-    assert (block.num_hours, block.start, block.message) == (3, "2024-08-23T11:00", "")
+    assert (block.num_hours, block.start, block.message) == (
+        3,
+        datetime.datetime.fromisoformat("2024-08-23T11:00"),
+        "",
+    )
 
 
 def test_find_sun_not_found(openmeteo_data):
