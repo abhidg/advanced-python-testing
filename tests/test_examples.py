@@ -33,7 +33,7 @@ def test_openmeteo_url():
 
 
 # This will fail if there is no network connection or if OpenMeteo is down
-def test_get_openmeteo():
+def test_fetch_network():
     data = fetch(NEWCASTLE)
     print(data)
     assert_approx_equal(data["latitude"], NEWCASTLE[0])
