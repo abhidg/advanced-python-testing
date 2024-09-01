@@ -170,20 +170,28 @@ Topics: mocking, property based testing, snapshot testing
 \end{frame}
 
 
-\begin{frame}{Walkthrough: finding the sun!}
+\begin{frame}[fragile]{Walkthrough: finding the sun!}
 \phantomsection\label{walkthrough-finding-the-sun}
-\begin{itemize}
-\item
-  \alert{Problem}: Find a block of $N$ hours when it will be sunny and
-  clear, given a location.
-\item
-  We will try to find a block of sun of two hours in Newcastle over the
-  next week
-\item
-  OpenMeteo has a nice free API
-\item
-  Steps: fetch data, process and find the sun block
-\end{itemize}
+\begin{columns}
+\begin{column}{0.35\textwidth}
+\alert{Problem}: Find a block of $N$ hours when it will be sunny and
+clear, given a location. We will try $N=2$ in Newcastle.
+\vskip 0.3cm
+Steps: fetch data from OpenMeteo, process and find the sun block
+\end{column}
+\begin{column}{0.45\textwidth}
+\begin{verbatim}
+sunblock.py
+sunblock_monolithic.py
+requirements.txt
+tests/openmeteo.json
+tests/test_examples.py
+tests/test_mock.py
+tests/test_property.py
+tests/test_snapshot.py
+\end{verbatim}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}{Further reading}
