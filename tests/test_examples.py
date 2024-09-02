@@ -1,7 +1,5 @@
-import json
 import pytest
 import datetime
-from pathlib import Path
 
 from numpy.testing import assert_approx_equal
 
@@ -10,7 +8,6 @@ from sunblock import (
     Location,
     openmeteo_api_url,
     fahrenheit_to_celsius,
-    process,
     find_sun,
     SunblockResult,
     NEWCASTLE,

@@ -14,8 +14,8 @@ OXFORD = (51.75, -1.25)
 NEWCASTLE = (54.98, -1.61)
 BRIGHTON = (50.75, 0)
 
-loc = OXFORD
-sunblock_hours = 1  # try to get a 1 hour sun block
+loc = NEWCASTLE
+sunblock_hours = 2  # try to get a 2 hour sun block
 
 
 def fahrenheit_to_celsius(temp):
