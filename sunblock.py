@@ -114,10 +114,10 @@ def find_sun(data: pd.DataFrame, num_hours: int) -> SunblockResult:
 
 
 if __name__ == "__main__":
-    loc = OXFORD
+    loc = NEWCASTLE
     data = fetch(loc)
     df = process(data)
     if isinstance(df, pd.DataFrame):
-        print(find_sun(df, 1))
+        print(find_sun(df, 2))
     else:
         print("Error fetching data for", loc)
