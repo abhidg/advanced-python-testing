@@ -34,7 +34,8 @@ python3 -m pytest tests/<file> -v
   https://docs.python.org/3/library/unittest.mock-examples.html
 - Specialised libraries [moto](https://docs.getmoto.org/en/latest/)
   (AWS),
-  [requests-mock](https://requests-mock.readthedocs.io/en/latest/)
+  [requests-mock](https://requests-mock.readthedocs.io/en/latest/),
+  [freezegun](https://pypi.org/project/freezegun/) (datetime mocking)
 - Mocks can automatically match specs, see
   [`autospec`](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.create_autospec)
 
