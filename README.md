@@ -3,6 +3,8 @@
 Accompanying repository for the RSECon24 talk "Advanced Python Testing -
 mocking, property based testing, snapshot testing"
 
+[Link to slides](https://github.com/abhidg/advanced-python-testing/releases/download/v1.0/RSECon24_Advanced_Python_Testing.pdf)
+
 ## Setup
 
 Setup requires Python 3 (>=3.10)
