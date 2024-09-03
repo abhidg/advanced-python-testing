@@ -4,6 +4,7 @@ Find the next block of sun shining for N hours at your location
 
 import sys
 import pandas as pd
+import datetime
 import requests
 
 CLEARISH_SKY_WMO_CODES = [0, 1]
@@ -54,6 +55,7 @@ df = pd.DataFrame(
     }
 )
 
+NOW = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M")
 assert (
     isinstance(sunblock_hours, int) and 0 < sunblock_hours < 23
 ), "Number of hours must be between 0 and 23"
@@ -61,6 +63,7 @@ assert (
 # Sunny when it is day time and the sky is clear or partly cloudy
 sunny = (
     (df.sunrise <= df.time)
+    & (df.time > NOW)
     & (df.time <= df.sunset)
     & (df.weather_code.isin(CLEARISH_SKY_WMO_CODES))
 )

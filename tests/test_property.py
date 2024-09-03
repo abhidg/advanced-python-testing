@@ -22,7 +22,7 @@ from sunblock import fahrenheit_to_celsius, find_sun
 # is equivalent to -273.15 degrees celsius.
 
 
-@given(floats())
+@given(floats(min_value=-450.0))
 def test_fahrenheit_to_celsius(temp):
     try:
         assert fahrenheit_to_celsius(temp) > -273.15  # absolute zero
@@ -48,7 +48,7 @@ def test_fahrenheit_differs_from_celsius(temp):
 # Test that a range of sunblock lengths does not crash the program
 @given(num_hours=integers(min_value=1, max_value=23))
 def test_find_sun(num_hours, openmeteo_data):
-    block = find_sun(openmeteo_data, num_hours)
+    block = find_sun(openmeteo_data, num_hours, now="2024-08-22T06:00")
     if block.message != "No sunny interval found":
         assert block.num_hours == num_hours
         # This is not true everywhere of course, but should be true

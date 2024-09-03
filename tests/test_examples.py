@@ -57,10 +57,10 @@ def test_process(openmeteo_data):
 
 
 def test_find_sun(openmeteo_data):
-    block = find_sun(openmeteo_data, num_hours=3)
-    assert_approx_equal(block.mean_temp_celsius, 19.916666666666668)
+    block = find_sun(openmeteo_data, num_hours=2, now="2024-08-22T21:00")
+    assert_approx_equal(block.mean_temp_celsius, 19.61111)
     assert (block.num_hours, block.start, block.message) == (
-        3,
+        2,
         datetime.datetime.fromisoformat("2024-08-23T11:00"),
         "",
     )

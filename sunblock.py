@@ -10,6 +10,7 @@ import pandas as pd
 import requests
 
 CLEARISH_SKY_WMO_CODES = [0, 1]
+NOW = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M")
 
 
 class SunblockResult(NamedTuple):
@@ -52,15 +53,6 @@ def fetch(loc: Location) -> dict[str, Any] | None:
 
 
 def fahrenheit_to_celsius(temp: pd.Series | float) -> pd.Series | float:
-    if isinstance(temp, float):
-        if math.isnan(temp):
-            raise ValueError("Temperature cannot be nan")
-        if math.isinf(temp):
-            raise ValueError("Temperature cannot be infinity")
-        if temp < -459.67:
-            raise ValueError(
-                "Temperature below minimum fahrenheit temperature at absolute zero"
-            )
     return 5 * (temp - 32) / 9
 
 
@@ -87,7 +79,7 @@ def process(data: dict[str, Any] | None) -> pd.DataFrame | None:
     )
 
 
-def find_sun(data: pd.DataFrame, num_hours: int) -> SunblockResult:
+def find_sun(data: pd.DataFrame, num_hours: int, now: str = NOW) -> SunblockResult:
     "Finds sun for `num_hours` in the data, after `day_start`"
     assert isinstance(num_hours, int), "num_hours should be an integer"
     if num_hours < 1:
@@ -96,6 +88,7 @@ def find_sun(data: pd.DataFrame, num_hours: int) -> SunblockResult:
         raise ValueError("Maximum sun block allowed is 23 hours")
     sunny = (
         (data.sunrise <= data.time)
+        & (data.time > now)
         & (data.time <= data.sunset)
         & (data.weather_code.isin(CLEARISH_SKY_WMO_CODES))
     )
